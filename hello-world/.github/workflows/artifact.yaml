@@ -1,0 +1,16 @@
+name: Artifact Workflow
+
+on: push
+
+jobs:
+  artifact-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create File
+        run: echo "Hello Artifact" > file.txt
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-file
+          path: file.txt

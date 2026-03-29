@@ -1,0 +1,14 @@
+name: Two Jobs Workflow
+
+on: push
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is Job 1"
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is Job 2"
