@@ -1,7 +1,10 @@
-name: Checkout Read File Lab
+name: Two - Checkout Read File Lab
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+  #workflow_dispatch:
 
 jobs:
   read-file:
