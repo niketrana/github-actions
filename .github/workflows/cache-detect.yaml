@@ -1,0 +1,31 @@
+name: Cache Detect Lab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cache-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore Cache
+        uses: actions/cache@v4
+        with:
+          path: my-cache
+          key: detect-cache
+
+      - name: Create Directory
+        run: mkdir -p my-cache
+
+      - name: Check File
+        run: |
+          if [ -f my-cache/file.txt ]; then
+            echo "File already exists from cache"
+          else
+            echo "File does not exist, creating file"
+            echo "Hello from cache" > my-cache/file.txt
+          fi
+
+      - name: Show File
+        run: cat my-cache/file.txt
