@@ -12,7 +12,7 @@ jobs:
       - name: Job 1 Step
         run: echo "This is Job 1"
       - name: Sleep
-        run: sleep 10
+        run: sleep 50
 
   job2:
     runs-on: ubuntu-latest
@@ -20,4 +20,4 @@ jobs:
       - name: Job 2 Step
         run: echo "This is Job 2"
       - name: Sleep
-        run: sleep 10
+        run: sleep 50
