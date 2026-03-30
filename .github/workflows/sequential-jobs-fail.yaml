@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Job 1 will fail
-        run: exit 1
+        run: exit 0
 
   job2:
     needs: job1
