@@ -3,7 +3,8 @@ name: Checkout Lab
 on:
   push:
     branches:
-      - checkout-labe
+#      - main
+      - checkout-lab
 #    paths:
 #      - '.github/workflows/checkout.yaml'
 
@@ -15,4 +16,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: List Files
-        run: ls -la
+        run: ls -l
