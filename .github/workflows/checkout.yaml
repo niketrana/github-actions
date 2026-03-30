@@ -1,8 +1,8 @@
 name: Checkout Lab
 
 on:
-  push 
-  #workflow_dispatch:
+#  push 
+  workflow_dispatch:
 
 jobs:
   checkout-job:
