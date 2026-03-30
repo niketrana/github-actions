@@ -23,7 +23,7 @@ jobs:
           if [ -f my-cache/file.txt ]; then
             echo "File already exists from cache"
           else
-            echo "File does not exist, creating file"
+            echo "File does not exist, creating file."
             echo "Hello from cache" > my-cache/file.txt
           fi
 
