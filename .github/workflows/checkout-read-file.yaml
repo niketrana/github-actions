@@ -1,0 +1,17 @@
+name: Checkout Read File Lab
+
+on:
+  workflow_dispatch:
+
+jobs:
+  read-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: List Files
+        run: ls -R
+
+      - name: Read File
+        run: cat hello-world/repo-file.txt
