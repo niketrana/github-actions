@@ -1,0 +1,23 @@
+name: Multiple Jobs Lab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job 1 Step
+        run: echo "This is Job 1"
+      - name: Sleep
+        run: sleep 10
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job 2 Step
+        run: echo "This is Job 2"
+      - name: Sleep
+        run: sleep 10
