@@ -2,8 +2,10 @@ name: Checkout Lab
 
 on:
   push:
-    paths:
-      - '.github/workflows/checkout.yaml'
+    branches:
+      - checkout-labe
+#    paths:
+#      - '.github/workflows/checkout.yaml'
 
 jobs:
   checkout-job:
