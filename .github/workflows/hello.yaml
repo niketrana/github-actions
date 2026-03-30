@@ -1,0 +1,17 @@
+name: N Hello Workflow N 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  N-hello-job-N:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: N Say Hello N 
+        run: echo "N Hello from GitHub Actions N "
+
+      - name: N Show Date N 
+        run: date
