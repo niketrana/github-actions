@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/docker-build-reusable.yml
 
     with:
-      image_name: mydockerhubusername/myapp
+      image_name: niketrana/github-actions-app
       image_tag: latest
 
     secrets:
