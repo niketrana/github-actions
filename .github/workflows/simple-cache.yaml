@@ -1,0 +1,30 @@
+name: Simple Cache Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cache-demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore Cache
+        uses: actions/cache@v4
+        with:
+          path: cache-folder
+          key: my-cache-key
+
+      - name: Create File
+        run: |
+          mkdir -p cache-folder
+          echo "Hello from cache" > cache-folder/hello.txt
+          cat cache-folder/hello.txt
+
+      - name: Save Cache
+        uses: actions/cache@v4
+        with:
+          path: cache-folder
+          key: my-cache-key
