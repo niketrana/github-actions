@@ -1,0 +1,37 @@
+name: Release Zip Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Step
+        run: |
+          echo "Building application..."
+          mkdir build
+          echo "Release version ${{ github.ref }}" > build/app.txt
+          cat build/app.txt
+
+      - name: Package Application
+        run: |
+          echo "Packaging application..."
+          zip -r release.zip build/
+          ls -l
+
+      - name: Upload Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-zip
+          path: release.zip
+
+      - name: Release Info
+        run: |
+          echo "Release completed for tag ${{ github.ref }}"
