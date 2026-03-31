@@ -1,4 +1,4 @@
-name: Simple Cache Workflow
+name: B Simple Cache Workflow
 
 on:
   workflow_dispatch:
