@@ -16,7 +16,7 @@ jobs:
 
       - name: Debug Secrets
         run: |
-          echo "Username length:"
+          echo "A Username length:"
           echo "${#DOCKER_USERNAME}"
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
