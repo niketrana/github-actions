@@ -1,0 +1,21 @@
+name: Deploy Simulation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Simulate Deployment
+        run: |
+          echo "Deploying application..."
+          mkdir deploy-folder
+          echo "Deployment completed at $(date)" > deploy-folder/deploy.txt
+          cat deploy-folder/deploy.txt
