@@ -1,0 +1,14 @@
+name: Build Reusable Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  n-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: N Build Step
+        run: echo "N Building application..."
+
+      - name: N Create Build File
+        run: echo "N Build complete" > n-build.txt
