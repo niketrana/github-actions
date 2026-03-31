@@ -1,4 +1,4 @@
-name: D Simple Cache Workflow
+name: Cache Lab
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  cache-demo:
+  cache-job:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +22,5 @@ jobs:
       - name: Create File
         run: |
           mkdir -p cache-folder
-          echo "Hello from cache" > cache-folder/hello.txt
-          cat cache-folder/hello.txt
-
-      - name: Save Cache
-        uses: actions/cache@v4
-        with:
-          path: cache-folder
-          key: my-cache-key
+          echo "Cache created on $(date)" > cache-folder/file.txt
+          cat cache-folder/file.txt
