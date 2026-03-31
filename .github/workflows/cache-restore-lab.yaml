@@ -1,4 +1,4 @@
-name: Cache Key Lab
+name: Cache Restore Keys Lab
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  cache-key-job:
+  cache-restore:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,10 +17,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: cache-folder
-          key: my-cache-v2
+          key: app-cache-v1
+          restore-keys: |
+            app-cache-
 
       - name: Write File
         run: |
           mkdir -p cache-folder
-          echo "Cache version v1 - $(date)" > cache-folder/version.txt
-          cat cache-folder/version.txt
+          echo "Cache restore test - $(date)" > cache-folder/test.txt
+          cat cache-folder/test.txt
