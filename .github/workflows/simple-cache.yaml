@@ -1,7 +1,9 @@
-name: C Simple Cache Workflow
+name: D Simple Cache Workflow
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   cache-demo:
