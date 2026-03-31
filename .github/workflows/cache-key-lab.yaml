@@ -1,0 +1,26 @@
+name: Cache Key Lab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cache-key-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore Cache
+        uses: actions/cache@v4
+        with:
+          path: cache-folder
+          key: my-cache-v1
+
+      - name: Write File
+        run: |
+          mkdir -p cache-folder
+          echo "Cache version v1 - $(date)" > cache-folder/version.txt
+          cat cache-folder/version.txt
