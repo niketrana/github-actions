@@ -15,4 +15,4 @@ jobs:
 
       - name: N Show Date N 
         run: date
-        if: success()
+        if: failure()
