@@ -1,4 +1,4 @@
-ame: Continue On Error Example
+name: Continue On Error Example
 
 on:
   push:
