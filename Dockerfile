@@ -1,2 +1,2 @@
-FROM alpine:3.19
-CMD ["echo", "Hello from GitHub Actions Docker Build"]
+FROM alpine:3.18
+CMD ["echo", "Hello from Docker CI Pipeline"]
