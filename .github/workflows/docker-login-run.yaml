@@ -27,4 +27,4 @@ jobs:
         run: docker run alpine:3.18 echo "Hello from Docker container"
 
       - name: List Docker Images
-        run: docker images
+        run: docker images #.
