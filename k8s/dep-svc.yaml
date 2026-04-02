@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-ci-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docker-ci
+  template:
+    metadata:
+      labels:
+        app: docker-ci
+    spec:
+      containers:
+      - name: docker-ci
+        image: rananiket/docker-ci-lab:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-ci-service
+spec:
+  selector:
+    app: docker-ci
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
