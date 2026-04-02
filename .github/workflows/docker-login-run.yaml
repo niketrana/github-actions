@@ -1,0 +1,30 @@
+name: Docker Login and Run Container
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  docker-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull Docker Image
+        run: docker pull alpine:3.18
+
+      - name: Run Container
+        run: docker run alpine:3.18 echo "Hello from Docker container"
+
+      - name: List Docker Images
+        run: docker images
