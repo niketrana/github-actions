@@ -21,4 +21,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Who Am I (Docker)
-        run: docker info | grep Username
+        run: docker info | grep Username #.
