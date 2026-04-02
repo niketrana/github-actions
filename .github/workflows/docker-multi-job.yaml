@@ -69,4 +69,4 @@ jobs:
 
       - name: Run Container
         run: |
-          docker run ${{ secrets.DOCKER_USERNAME }}/docker-ci-lab:latest
+          docker run ${{ secrets.DOCKER_USERNAME }}/docker-ci-lab:latest #ad
