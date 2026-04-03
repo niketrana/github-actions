@@ -1,0 +1,10 @@
+name: N Main Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  n-call-build:
+    uses: ./.github/workflows/n-build-reusable.yaml

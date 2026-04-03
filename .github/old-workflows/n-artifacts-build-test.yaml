@@ -1,0 +1,31 @@
+name: N Artifacts Build Test Lab
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  n-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: N Create Build File
+        run: echo "N This is build output" > n-build.txt
+
+      - name: N Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: n-build-artifact
+          path: n-build.txt
+
+  n-test:
+    needs: n-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: N Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: n-build-artifact
+
+      - name: N Test Build File
+        run: cat n-build.txt
