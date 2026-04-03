@@ -1,5 +1,3 @@
-name: Update Deployment Image
-
 on:
   push:
     branches:
@@ -13,8 +11,13 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Install Kind Cluster
+    - name: Install Kubernetes Cluster (Kind)
       uses: helm/kind-action@v1
+
+    - name: Check Cluster
+      run: |
+        kubectl get nodes
+        kubectl get pods -A
 
     - name: Deploy Initial Deployment
       run: |
@@ -25,10 +28,21 @@ jobs:
     - name: Update Deployment Image
       run: |
         kubectl set image deployment/myapp-deployment myapp=nginx:1.25
-        kubectl rollout status deployment/myapp-deployment
+        kubectl rollout status deployment/myapp-deployment --timeout=120s
 
     - name: Show Rollout History
       run: kubectl rollout history deployment/myapp-deployment
 
-    - name: Verify Pods
-      run: kubectl get pods -o wide
+    - name: Debug Pods
+      run: |
+        kubectl get pods -o wide
+        kubectl describe deployment myapp-deployment
+
+    # Optional rollback step (uncomment to test rollback)
+    # - name: Rollback Deployment
+    #   run: |
+    #     kubectl rollout undo deployment/myapp-deployment
+    #     kubectl rollout status deployment/myapp-deployment
+
+    - name: Final Resources
+      run: kubectl get all
