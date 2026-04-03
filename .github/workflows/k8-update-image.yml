@@ -28,7 +28,7 @@ jobs:
     - name: Update Deployment Image
       run: |
         kubectl set image deployment/myapp-deployment myapp=nginx:1.25-alpine
-        kubectl rollout status deployment/myapp-deployment --timeout=120s
+        kubectl rollout status deployment/myapp-deployment --timeout=180s
 
     - name: Show Rollout History
       run: kubectl rollout history deployment/myapp-deployment
