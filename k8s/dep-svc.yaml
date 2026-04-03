@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: docker-ci
-        image: rananiket/docker-ci-lab:e72785c
+        image: rananiket/docker-ci-lab:0ebfcaa
         ports:
         - containerPort: 80
 ---
