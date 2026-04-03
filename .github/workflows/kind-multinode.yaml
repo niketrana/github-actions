@@ -1,0 +1,34 @@
+name: Multi Node Kind Cluster
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  multinode-cluster:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Create Multi Node Kind Cluster
+      uses: helm/kind-action@v1
+      with:
+        config: kind-config.yaml
+
+    - name: Show Cluster Nodes
+      run: kubectl get nodes -o wide
+
+    - name: Deploy Application
+      run: kubectl apply -f k8s/deployment.yaml
+
+    - name: Wait for Deployment
+      run: kubectl rollout status deployment/multinode-deployment --timeout=180s
+
+    - name: Show Pods on Nodes
+      run: kubectl get pods -o wide
+
+    - name: Show All Resources
+      run: kubectl get all
