@@ -15,11 +15,4 @@ spec:
       containers:
       - name: myapp
         image: nginx:alpine
-        env:
-        - name: APP_COLOR
-          valueFrom:
-            configMapKeyRef:
-              name: myapp-config
-              key: APP_COLOR
-        ports:
         - containerPort: 80

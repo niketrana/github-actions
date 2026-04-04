@@ -1,0 +1,43 @@
+name: Branch Based Environment Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Create Kind Cluster
+      uses: helm/kind-action@v1
+
+    - name: Create Namespaces
+      run: |
+        kubectl create namespace dev || true
+        kubectl create namespace prod || true
+
+    - name: Deploy to Dev Namespace
+      if: github.ref == 'refs/heads/dev'
+      run: |
+        kubectl apply -n dev -f k8s/deployment.yaml
+        kubectl rollout status deployment/myapp-deployment -n dev
+
+    - name: Deploy to Prod Namespace
+      if: github.ref == 'refs/heads/main'
+      run: |
+        kubectl apply -n prod -f k8s/deployment.yaml
+        kubectl rollout status deployment/myapp-deployment -n prod
+
+    - name: Show Dev Resources
+      if: github.ref == 'refs/heads/dev'
+      run: kubectl get all -n dev
+
+    - name: Show Prod Resources
+      if: github.ref == 'refs/heads/main'
+      run: kubectl get all -n prod
