@@ -1,0 +1,42 @@
+name: Rollout Restart Deployment
+
+on:
+  workflow_dispatch: 
+
+#on:
+#  push:
+#    branches:
+#      - main
+
+jobs:
+  rollout-restart:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Create Kind Cluster
+      uses: helm/kind-action@v1
+
+    - name: Deploy Application
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl rollout status deployment/myapp-deployment --timeout=180s
+
+    - name: Pods Before Restart
+      run: kubectl get pods -o wide
+
+    - name: Rollout Restart Deployment
+      run: |
+        kubectl rollout restart deployment/myapp-deployment
+        kubectl rollout status deployment/myapp-deployment --timeout=180s
+
+    - name: Pods After Restart
+      run: kubectl get pods -o wide
+
+    - name: Deployment History
+      run: kubectl rollout history deployment/myapp-deployment
+
+    - name: Show All Resources
+      run: kubectl get all
