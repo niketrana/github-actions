@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-deployment
+  name: multinode-deployment
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: myapp
+      app: multinode
   template:
     metadata:
       labels:
-        app: myapp
+        app: multinode
     spec:
       containers:
       - name: nginx

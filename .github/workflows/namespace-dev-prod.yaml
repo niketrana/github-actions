@@ -1,0 +1,37 @@
+name: Namespace Dev Prod Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  namespace-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Create Kind Cluster
+      uses: helm/kind-action@v1
+
+    - name: Create Namespaces
+      run: |
+        kubectl create namespace dev
+        kubectl create namespace prod
+        kubectl get namespaces
+
+    - name: Deploy to Dev Namespace
+      run: |
+        kubectl apply -n dev -f k8s/deployment.yaml
+        kubectl rollout status deployment/myapp-deployment -n dev --timeout=180s
+
+    - name: Deploy to Prod Namespace
+      run: |
+        kubectl apply -n prod -f k8s/deployment.yaml
+        kubectl rollout status deployment/myapp-deployment -n prod --timeout=180s
+
+    - name: Show Dev Resources
+      run: kubectl get all -n dev
+
+    - name: Show Prod Resources
+      run: kubectl get all -n prod
