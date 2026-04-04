@@ -1,42 +1,35 @@
-name: Rollout Restart Deployment
+name: Multi Node Kind Cluster
 
 on:
-  workflow_dispatch: 
-
-#on:
-#  push:
-#    branches:
-#      - main
+  workflow_dispatch:
 
 jobs:
-  rollout-restart:
+  multinode-cluster:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Create Kind Cluster
+    - name: Create Multi Node Kind Cluster
       uses: helm/kind-action@v1
+      with:
+        config: kind-config.yaml
+
+    - name: Show Cluster Nodes
+      run: kubectl get nodes -o wide
 
     - name: Deploy Application
-      run: |
-        kubectl apply -f k8s/deployment.yaml
-        kubectl rollout status deployment/myapp-deployment --timeout=180s
+      run: kubectl apply -f k8s/deployment.yaml
 
-    - name: Pods Before Restart
+    - name: Show Deployments
+      run: kubectl get deployments
+
+    - name: Wait for Deployment
+      run: kubectl rollout status deployment/multinode-deployment --timeout=180s
+
+    - name: Show Pods on Nodes
       run: kubectl get pods -o wide
-
-    - name: Rollout Restart Deployment
-      run: |
-        kubectl rollout restart deployment/myapp-deployment
-        kubectl rollout status deployment/myapp-deployment --timeout=180s
-
-    - name: Pods After Restart
-      run: kubectl get pods -o wide
-
-    - name: Deployment History
-      run: kubectl rollout history deployment/myapp-deployment
 
     - name: Show All Resources
       run: kubectl get all
