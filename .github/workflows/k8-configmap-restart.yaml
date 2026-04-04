@@ -22,26 +22,22 @@ jobs:
         kubectl apply -f k8s/deployment.yaml
         kubectl rollout status deployment/myapp-deployment --timeout=180s
 
-    - name: Check APP_COLOR Before Update
-      run: |
-        POD=$(kubectl get pod -l app=myapp -o jsonpath="{.items[0].metadata.name}")
-        kubectl exec $POD -- printenv APP_COLOR
-
+   
     - name: Update ConfigMap
       run: |
         kubectl create configmap myapp-config \
           --from-literal=APP_COLOR=green \
           -o yaml --dry-run=client | kubectl apply -f -
-
+    
     - name: Rollout Restart Deployment
       run: |
         kubectl rollout restart deployment/myapp-deployment
         kubectl rollout status deployment/myapp-deployment --timeout=180s
-
+    
+    - name: Wait for New Pod
+      run: sleep 10
+    
     - name: Check APP_COLOR After Update
       run: |
         POD=$(kubectl get pod -l app=myapp -o jsonpath="{.items[0].metadata.name}")
         kubectl exec $POD -- printenv APP_COLOR
-
-    - name: Show Pods
-      run: kubectl get pods -o wide
