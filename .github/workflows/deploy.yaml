@@ -15,20 +15,26 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
+    - name: Install kubectl
+      run: |
+        curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+
     - name: Set environment
       run: |
-        if [[ "\${GITHUB_REF##*/}" == "dev" ]]; then
-          echo "ENV=dev" >> \$GITHUB_ENV
-        elif [[ "\${GITHUB_REF##*/}" == "staging" ]]; then
-          echo "ENV=staging" >> \$GITHUB_ENV
+        if [[ "${GITHUB_REF##*/}" == "dev" ]]; then
+          echo "ENV=dev" >> $GITHUB_ENV
+        elif [[ "${GITHUB_REF##*/}" == "staging" ]]; then
+          echo "ENV=staging" >> $GITHUB_ENV
         else
-          echo "ENV=prod" >> \$GITHUB_ENV
+          echo "ENV=prod" >> $GITHUB_ENV
         fi
 
     - name: Setup kubeconfig
       run: |
         mkdir -p ~/.kube
-        echo "\${{ secrets.KUBECONFIG }}" > ~/.kube/config
+        echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
     - name: Deploy
-      run: kubectl apply -f k8s/\$ENV/
+      run: kubectl apply -f k8s/$ENV/
