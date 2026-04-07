@@ -1,12 +1,14 @@
 name: Blue-Green Deploy (k3s)
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+  workflow_dispatch:
 
     steps:
     - name: Checkout
