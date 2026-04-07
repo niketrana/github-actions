@@ -17,6 +17,12 @@ jobs:
       run: |
         curl -sfL https://get.k3s.io | sh -
         sudo kubectl get nodes
+        sleep 20
+        # set kubeconfig
+        sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        # verify
+        kubectl get nodes
 
     - name: Deploy Blue (current)
       run: kubectl apply -f k8s/blue/
