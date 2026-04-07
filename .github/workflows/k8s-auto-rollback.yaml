@@ -14,22 +14,34 @@ jobs:
     - name: Create kind cluster
       uses: helm/kind-action@v1
 
-    # 🔹 Deploy application
-    - name: Deploy
+    # ✅ Create namespace FIRST
+    - name: Create Namespace
+      run: kubectl create namespace dev || true
+
+    # ✅ Initial deploy (creates first revision)
+    - name: Initial Deploy (baseline)
       run: kubectl apply -f k8s/dev/
 
-    # 🔹 Wait for rollout (this will fail if pods not ready)
+    # ✅ Wait for baseline to be healthy
+    - name: Wait for baseline rollout
+      run: kubectl rollout status deployment/nginx -n dev --timeout=120s
+
+    # 🔹 Simulate new deployment (same apply again or updated image)
+    - name: Deploy New Version
+      run: kubectl apply -f k8s/dev/
+
+    # 🔹 Check rollout (this may fail)
     - name: Check rollout
       id: rollout
-      run: kubectl rollout status deployment/nginx --timeout=60s
+      run: kubectl rollout status deployment/nginx -n dev --timeout=60s
 
-    # 🔹 Rollback if rollout failed
+    # 🔴 Rollback if failed
     - name: Rollback
       if: failure()
       run: |
         echo "Rollout failed. Rolling back..."
-        kubectl rollout undo deployment/nginx
+        kubectl rollout undo deployment/nginx -n dev
 
-    # 🔹 Verify final state
+    # ✅ Verify final state
     - name: Verify
-      run: kubectl get pods
+      run: kubectl get pods -n dev
