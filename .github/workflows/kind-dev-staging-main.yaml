@@ -1,4 +1,4 @@
-name: Helm Deploy (kind)
+name: K8s Deploy (kind)
 
 on:
   push:
@@ -8,20 +8,17 @@ on:
       - main
 
 jobs:
-  deploy:
+  k8-labs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-    - name: Setup kind cluster
+    - name: Create Kind Cluster
       uses: helm/kind-action@v1
 
-    - name: Install Helm
-      uses: azure/setup-helm@v3
-
-    - name: Set environment
+    - name: Set Environment
       run: |
         if [[ "${GITHUB_REF##*/}" == "dev" ]]; then
           echo "ENV=dev" >> $GITHUB_ENV
@@ -31,10 +28,11 @@ jobs:
           echo "ENV=prod" >> $GITHUB_ENV
         fi
 
-    - name: Deploy with Helm
-      run: |
-        helm upgrade --install myapp ./helm-chart \
-          --namespace $ENV --create-namespace \
-          --set env=$ENV \
-          --set image.repository=nginx \
-          --set image.tag=alpine
+    - name: Create Namespace
+      run: kubectl create namespace $ENV || true
+
+    - name: Deploy
+      run: kubectl apply -f k8s/$ENV/
+
+    - name: Verify
+      run: kubectl get pods -n $ENV
