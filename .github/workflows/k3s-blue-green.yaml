@@ -2,8 +2,8 @@ name: Blue-Green Deploy (k3s)
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+#  push:
+#    branches: [main]
 
 jobs:
   deploy:
