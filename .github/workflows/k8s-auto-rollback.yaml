@@ -1,0 +1,35 @@
+name: K8s Deploy with Auto Rollback
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create kind cluster
+      uses: helm/kind-action@v1
+
+    # 🔹 Deploy application
+    - name: Deploy
+      run: kubectl apply -f k8s/dev/
+
+    # 🔹 Wait for rollout (this will fail if pods not ready)
+    - name: Check rollout
+      id: rollout
+      run: kubectl rollout status deployment/nginx --timeout=60s
+
+    # 🔹 Rollback if rollout failed
+    - name: Rollback
+      if: failure()
+      run: |
+        echo "Rollout failed. Rolling back..."
+        kubectl rollout undo deployment/nginx
+
+    # 🔹 Verify final state
+    - name: Verify
+      run: kubectl get pods
