@@ -56,4 +56,4 @@ jobs:
     - name: Verify Rollout
       run: kubectl get pods
       env:
-        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml #
