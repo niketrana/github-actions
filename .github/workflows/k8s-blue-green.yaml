@@ -1,0 +1,29 @@
+name: Blue-Green Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create kind cluster
+      uses: helm/kind-action@v1
+
+    - name: Deploy Blue (current)
+      run: kubectl apply -f k8s/blue/
+
+    - name: Deploy Green (new)
+      run: kubectl apply -f k8s/green/
+
+    - name: Switch traffic to Green
+      run: |
+        kubectl patch service nginx-service \
+        -p '{"spec":{"selector":{"app":"nginx","version":"green"}}}'
+
+    - name: Verify rollout
+      run: kubectl get pods
