@@ -1,0 +1,36 @@
+name: CI-CD (Docker → K8s)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # 🔹 Build image
+    - name: Build Image
+      run: docker build -t rananiket/n-nginx-app:latest .
+
+    # 🔹 Login to DockerHub
+    - name: Docker Login
+      run: echo "\${{ secrets.DOCKER_PASSWORD }}" | docker login -u "\${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    # 🔹 Push image
+    - name: Push Image
+      run: docker push rananiket/n-nginx-app:latest
+
+    # 🔹 Create K8s cluster
+    - name: Create kind cluster
+      uses: helm/kind-action@v1
+
+    # 🔹 Deploy to K8s
+    - name: Deploy
+      run: kubectl apply -f k8s/
+
+    # 🔹 Verify
+    - name: Verify
+      run: kubectl get pods
