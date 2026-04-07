@@ -1,9 +1,8 @@
 name: Blue-Green Deploy (k3s)
 
 on:
-  workflow_dispatch:
-#  push:
-#    branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   deploy:
@@ -16,30 +15,45 @@ jobs:
     - name: Install k3s
       run: |
         curl -sfL https://get.k3s.io | sh -
-        sudo kubectl get nodes
-        sleep 20
+
         # set kubeconfig
         sudo chmod 644 /etc/rancher/k3s/k3s.yaml
         export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
+        # wait for cluster
+        sleep 20
+
         # verify
         kubectl get nodes
 
-    - name: Deploy Blue (current)
+    - name: Deploy Blue
       run: kubectl apply -f k8s/blue/
+      env:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
-    - name: Deploy Green (new)
+    - name: Deploy Green
       run: kubectl apply -f k8s/green/
+      env:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
-    - name: Create Service (initially Blue)
+    - name: Create Service (Blue first)
       run: kubectl apply -f k8s/service.yaml
+      env:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Verify Green Pods
       run: kubectl get pods -l version=green
+      env:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Switch Traffic to Green
       run: |
         kubectl patch service nginx-service \
         -p '{"spec":{"selector":{"app":"nginx","version":"green"}}}'
+      env:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Verify Rollout
       run: kubectl get pods
+      env:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
