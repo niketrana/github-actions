@@ -15,8 +15,6 @@ jobs:
 
     - name: Create Multi Node Kind Cluster
       uses: helm/kind-action@v1
-      with:
-        config: kind-config.yaml
 
     - name: Show Cluster Nodes
       run: kubectl get nodes -o wide
