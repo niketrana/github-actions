@@ -1,8 +1,9 @@
 name: Canary Deployment (Replica-based)
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+#  push:
+#    branches: [main]
 
 jobs:
   canary:
