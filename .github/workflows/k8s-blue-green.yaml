@@ -21,6 +21,9 @@ jobs:
     - name: Deploy Green (new)
       run: kubectl apply -f k8s/green/
 
+    - name: Create Service
+      run: kubectl apply -f k8s/service.yaml
+
     - name: Switch traffic to Green
       run: |
         kubectl patch service nginx-service \
