@@ -36,7 +36,7 @@ jobs:
       run: kubectl get svc nginx-service -o jsonpath='{.spec.selector}'
 
     # ✅ Verify endpoints (actual pods receiving traffic)
-    - name: Check Endpoints
+    - name: Check Endpoints (before switch)
       run: kubectl get endpoints nginx-service -o wide
 
     # 🔁 Switch traffic → GREEN
@@ -50,7 +50,7 @@ jobs:
       run: kubectl get svc nginx-service -o jsonpath='{.spec.selector}'
 
     # ✅ Verify endpoints (actual pods receiving traffic)
-    - name: Check Endpoints
+    - name: Check Endpoints (after switch)
       run: kubectl get endpoints nginx-service -o wide
 
     # ✅ Final pod state check
