@@ -1,0 +1,14 @@
+name: ArgoCD Sync
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Trigger ArgoCD Sync
+      run: |
+        curl -k -X POST https://ARGOCD_SERVER/api/v1/applications/myapp/sync \
+        -H "Authorization: Bearer $ARGOCD_TOKEN"
