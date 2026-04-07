@@ -1,0 +1,63 @@
+name: Canary Deployment (Replica-based)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create kind cluster
+      uses: helm/kind-action@v1
+
+    # 🔹 Deploy stable (v1)
+    - name: Deploy Stable
+      run: kubectl apply -f k8s/stable/
+
+    # 🔹 Deploy canary (v2)
+    - name: Deploy Canary
+      run: kubectl apply -f k8s/canary/
+
+    - name: Create Service
+      run: kubectl apply -f k8s/service.yaml
+
+    # 🔹 Wait for readiness
+    - name: Wait for rollout
+      run: |
+        kubectl rollout status deployment/nginx-stable --timeout=120s
+        kubectl rollout status deployment/nginx-canary --timeout=120s
+
+    # 🔹 Step 1: ~10% traffic
+    - name: 10% Canary
+      run: |
+        kubectl scale deployment nginx-stable --replicas=9
+        kubectl scale deployment nginx-canary --replicas=1
+        kubectl get pods -l app=nginx
+
+    - name: Observe
+      run: sleep 10
+
+    # 🔹 Step 2: ~50% traffic
+    - name: 50% Canary
+      run: |
+        kubectl scale deployment nginx-stable --replicas=5
+        kubectl scale deployment nginx-canary --replicas=5
+        kubectl get pods -l app=nginx
+
+    - name: Observe
+      run: sleep 10
+
+    # 🔹 Step 3: 100% rollout
+    - name: Promote Canary
+      run: |
+        kubectl scale deployment nginx-stable --replicas=0
+        kubectl scale deployment nginx-canary --replicas=10
+        kubectl get pods -l app=nginx
+
+    # 🔹 Final verification
+    - name: Verify
+      run: kubectl get pods -o wide
