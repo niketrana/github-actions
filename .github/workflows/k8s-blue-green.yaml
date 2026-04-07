@@ -1,9 +1,9 @@
-name: Blue-Green Deploy
+name: Blue-Green Deploy (kind)
 
 on:
-  workflow_dispatch:
-#  push:
-#    branches: [main]
+#  workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   deploy:
@@ -15,19 +15,40 @@ jobs:
     - name: Create kind cluster
       uses: helm/kind-action@v1
 
-    - name: Deploy Blue (current)
+    - name: Deploy Blue
       run: kubectl apply -f k8s/blue/
 
-    - name: Deploy Green (new)
+    - name: Deploy Green
       run: kubectl apply -f k8s/green/
 
-    - name: Create Service
+    - name: Create Service (Blue first)
       run: kubectl apply -f k8s/service.yaml
 
-    - name: Switch traffic to Green
+    # ✅ Wait until pods are Running
+    - name: Wait for Blue Pods
+      run: kubectl rollout status deployment/nginx-blue --timeout=120s
+
+    - name: Wait for Green Pods
+      run: kubectl rollout status deployment/nginx-green --timeout=120s
+
+    # ✅ Verify current traffic (should be BLUE)
+    - name: Check Service Selector (before switch)
+      run: kubectl get svc nginx-service -o jsonpath='{.spec.selector}'
+
+    # 🔁 Switch traffic → GREEN
+    - name: Switch Traffic to Green
       run: |
         kubectl patch service nginx-service \
         -p '{"spec":{"selector":{"app":"nginx","version":"green"}}}'
 
-    - name: Verify rollout
-      run: kubectl get pods
+    # ✅ Verify traffic switched
+    - name: Check Service Selector (after switch)
+      run: kubectl get svc nginx-service -o jsonpath='{.spec.selector}'
+
+    # ✅ Verify endpoints (actual pods receiving traffic)
+    - name: Check Endpoints
+      run: kubectl get endpoints nginx-service -o wide
+
+    # ✅ Final pod state check
+    - name: Verify Pods Running
+      run: kubectl get pods -o wide
