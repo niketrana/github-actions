@@ -1,0 +1,39 @@
+name: Blue-Green Deploy (k3s)
+
+on:
+  workflow_dispatch:
+#  push:
+#    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install k3s
+      run: |
+        curl -sfL https://get.k3s.io | sh -
+        sudo kubectl get nodes
+
+    - name: Deploy Blue (current)
+      run: kubectl apply -f k8s/blue/
+
+    - name: Deploy Green (new)
+      run: kubectl apply -f k8s/green/
+
+    - name: Create Service (initially Blue)
+      run: kubectl apply -f k8s/service.yaml
+
+    - name: Verify Green Pods
+      run: kubectl get pods -l version=green
+
+    - name: Switch Traffic to Green
+      run: |
+        kubectl patch service nginx-service \
+        -p '{"spec":{"selector":{"app":"nginx","version":"green"}}}'
+
+    - name: Verify Rollout
+      run: kubectl get pods
