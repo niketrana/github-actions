@@ -35,6 +35,10 @@ jobs:
     - name: Check Service Selector (before switch)
       run: kubectl get svc nginx-service -o jsonpath='{.spec.selector}'
 
+    # ✅ Verify endpoints (actual pods receiving traffic)
+    - name: Check Endpoints
+      run: kubectl get endpoints nginx-service -o wide
+
     # 🔁 Switch traffic → GREEN
     - name: Switch Traffic to Green
       run: |
