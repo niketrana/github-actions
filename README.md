@@ -1,8 +1,2 @@
 # github-actions# trigger
-# trigger
-#
-#
-#
-#
-#
-# A
+# trigger . 
