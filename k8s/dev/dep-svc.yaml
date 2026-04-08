@@ -18,19 +18,3 @@ spec:
         image: nginx:alpine
         ports:
         - containerPort: 80
-        env:
-        - name: ENV
-          value: DEV
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-  namespace: dev
-spec:
-  selector:
-    app: nginx
-  ports:
-  - port: 80
-    targetPort: 80
-  type: NodePort
