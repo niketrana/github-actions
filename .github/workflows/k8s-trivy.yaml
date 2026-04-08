@@ -1,0 +1,35 @@
+name: Trivy Scan + Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  scan-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # 🔹 Build image
+    - run: docker build -t myapp:latest .
+
+    # 🔹 Scan image
+    - name: Run Trivy Scan
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        image-ref: myapp:latest
+        format: table
+        exit-code: 1   # ❗ fail if vulnerabilities
+        ignore-unfixed: true
+
+    # 🔹 Create cluster
+    - uses: helm/kind-action@v1
+
+    # 🔹 Deploy only if scan passes
+    - name: Deploy
+      run: kubectl apply -f k8s/
+
+    # 🔹 Wait for pods
+    - name: Wait
+      run: kubectl rollout status deployment/nginx --timeout=120s
