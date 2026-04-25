@@ -19,17 +19,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: niketrana/25apr26-github-actions-demo
-
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: |
-            niketrana/25apr26-github-actions-demo:latest
-            niketrana/25apr26-github-actions-demo:${{ github.run_number }}
+          tags: niketrana/github-actions-demo:latest
