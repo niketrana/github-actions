@@ -24,4 +24,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: niketrana/github-actions-demo:latest
+          tags: rananiket/25apr26-2-github-actions-demo:latest
