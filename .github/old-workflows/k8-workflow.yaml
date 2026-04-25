@@ -1,0 +1,41 @@
+name: K8 GitHub Actions Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  kubernetes:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+
+    - name: Install Kind
+      run: |
+        curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+        chmod +x ./kind
+        sudo mv ./kind /usr/local/bin/kind
+
+    - name: Create Kind Cluster
+      run: kind create cluster
+
+    - name: Check Nodes
+      run: kubectl get nodes
+
+    - name: Create ConfigMap
+      run: kubectl apply -f k8s/configmap.yaml
+
+    - name: Create Secret
+      run: kubectl apply -f k8s/secret.yaml
+
+    - name: Create Deployment
+      run: kubectl apply -f k8s/deployment.yaml
+
+    - name: Create Service
+      run: kubectl apply -f k8s/service.yaml

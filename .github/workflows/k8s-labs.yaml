@@ -1,0 +1,65 @@
+name: Kubernetes Labs
+
+on:
+  workflow_dispatch:
+    inputs:
+      lab:
+        description: "Select Kubernetes Lab"
+        required: true
+        default: deploy
+        type: choice
+        options:
+          - deploy
+          - rollout-restart
+          - namespace
+          - job
+
+jobs:
+  k8-labs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Create Kind Cluster
+      uses: helm/kind-action@v1
+
+    - name: Show Cluster Nodes
+      run: kubectl get nodes
+
+    # ---------------- DEPLOYMENT LAB ----------------
+    - name: Deployment Lab
+      if: github.event.inputs.lab == 'deploy'
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl rollout status deployment/myapp-deployment --timeout=180s
+        kubectl get pods
+
+    # ---------------- ROLLOUT RESTART LAB ----------------
+    - name: Rollout Restart Lab
+      if: github.event.inputs.lab == 'rollout-restart'
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl rollout restart deployment/myapp-deployment
+        kubectl rollout status deployment/myapp-deployment --timeout=180s
+        kubectl get pods
+
+    # ---------------- NAMESPACE DEV/PROD LAB ----------------
+    - name: Namespace Dev/Prod Lab
+      if: github.event.inputs.lab == 'namespace'
+      run: |
+        kubectl create namespace dev
+        kubectl create namespace prod
+        kubectl apply -n dev -f k8s/deployment.yaml
+        kubectl apply -n prod -f k8s/deployment.yaml
+        kubectl get all -n dev
+        kubectl get all -n prod
+
+    # ---------------- JOB LAB ----------------
+    - name: Kubernetes Job Lab
+      if: github.event.inputs.lab == 'job'
+      run: |
+        kubectl apply -f k8s/job.yaml
+        kubectl get jobs
+        kubectl get pods

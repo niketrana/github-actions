@@ -1,0 +1,24 @@
+name: Continue On Error Example
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-continue-error:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Step 1 - Success
+        run: echo "This step succeeds"
+
+      - name: Step 2 - Fail but Continue
+        continue-on-error: true
+        run: |
+          echo "This step will fail"
+          exit 1
+
+      - name: Step 3 - Runs Even After Failure
+        run: echo "Workflow continues even though previous step failed"

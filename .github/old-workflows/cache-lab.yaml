@@ -1,0 +1,27 @@
+name: Cache Lab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cache-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Restore Cache
+        uses: actions/cache@v4
+        with:
+          path: cache-dir
+          key: my-cache-key
+
+      - name: Create File
+        run: |
+          mkdir -p cache-dir
+          echo "Cached data" > cache-dir/data.txt
+
+      - name: Show File
+        run: cat cache-dir/data.txt

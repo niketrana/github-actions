@@ -1,0 +1,40 @@
+name: Kubernetes Kind CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  k8s-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Kubernetes Cluster (Kind)
+      uses: helm/kind-action@v1
+
+    - name: Check Cluster
+      run: |
+        kubectl get nodes
+        kubectl get pods -A
+
+    - name: Create ConfigMap
+      run: kubectl apply -f k8s/configmap.yaml
+
+    - name: Create Secret
+      run: kubectl apply -f k8s/secret.yaml
+
+    - name: Create Deployment
+      run: kubectl apply -f k8s/deployment.yaml
+
+    - name: Create Service
+      run: kubectl apply -f k8s/service.yaml
+
+    - name: Verify Resources
+      run: |
+        kubectl get all
+        kubectl get configmap
+        kubectl get secret

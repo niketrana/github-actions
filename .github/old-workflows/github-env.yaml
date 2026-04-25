@@ -1,0 +1,23 @@
+name: GITHUB_ENV Lab
+
+on:
+  #workflow_dispatch:
+  push:
+    branches:
+    - main
+
+jobs:
+  github-env-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Variable
+        run: echo "COLOR=blue" >> $GITHUB_ENV
+
+      - name: Use Variable
+        run: echo "Color is $COLOR"
+
+      - name: Set Another Variable
+        run: echo "FRUIT=apple" >> $GITHUB_ENV
+
+      - name: Use Another Variable
+        run: echo "Fruit is $FRUIT"
