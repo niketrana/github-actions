@@ -25,7 +25,7 @@ jobs:
           context: .
           push: true
           tags: |
-            #rananiket/27-apr26-ci-app:latest
-            #rananiket/27-apr26-ci-app:v4
+            # rananiket/27-apr26-ci-app:latest
+            # rananiket/27-apr26-ci-app:v4
             rananiket/27-apr26-ci-app:v5
             rananiket/27-apr26-ci-app:v6
