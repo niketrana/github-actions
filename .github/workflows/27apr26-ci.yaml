@@ -24,4 +24,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: rananiket/27-1443-apr26-ci-app:latest
+          tags: rananiket/27-apr26-ci-app:v3
